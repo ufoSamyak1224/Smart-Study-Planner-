@@ -1,19 +1,3 @@
-// SmartStudyPlanner.cpp
-// Smart Study Planner with AI Scheduling (single-file project)
-// Features:
-//  - Subject class (OOP)
-//  - Planner class (scheduling, adaptive AI adjustment)
-//  - Persistence to CSV (save/load)
-//  - Templates, operator overloading, smart pointers, exceptions
-//  - Menu-driven demo UI
-//
-// Compile:
-//   g++ -std=c++17 -O2 -o SmartStudyPlanner SmartStudyPlanner.cpp
-// Run:
-//   ./SmartStudyPlanner
-//
-// Author: ChatGPT (educational example)
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -34,13 +18,11 @@ T clamp(const T& v, const T& lo, const T& hi) {
     if (v > hi) return hi;
     return v;
 }
-
 std::string fmtd(double v, int prec = 2) {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(prec) << v;
     return oss.str();
 }
-
 class Subject {
 private:
     std::string name_;
@@ -49,34 +31,28 @@ private:
     double perfScore_;
     double allocatedHours_;
     std::vector<double> historyScores_;
-
 public:
     Subject() : name_(""), difficulty_(5), importance_(5),
                 perfScore_(100.0), allocatedHours_(0.0) {}
-
     Subject(const std::string& name, int difficulty, int importance, double perfScore = 100.0)
         : name_(name),
           difficulty_(clamp(difficulty, 1, 10)),
           importance_(clamp(importance, 1, 10)),
           perfScore_(clamp(perfScore, 0.0, 100.0)),
           allocatedHours_(0.0) {}
-
     std::string name() const { return name_; }
     int difficulty() const { return difficulty_; }
     int importance() const { return importance_; }
     double perfScore() const { return perfScore_; }
     double allocatedHours() const { return allocatedHours_; }
-
     double priorityWeight() const {
         double perfFactor = 1.5 - (perfScore_ / 100.0);
         double base = static_cast<double>(difficulty_) * static_cast<double>(importance_);
         return base * perfFactor;
     }
-
     void setAllocatedHours(double hrs) {
         allocatedHours_ = std::max(0.0, hrs);
     }
-
     void updatePerformance(double newScore) {
         newScore = clamp(newScore, 0.0, 100.0);
         historyScores_.push_back(newScore);
@@ -84,17 +60,14 @@ public:
         double sum = std::accumulate(historyScores_.begin(), historyScores_.end(), 0.0);
         perfScore_ = sum / historyScores_.size();
     }
-
     void setPerformance(double score) {
         perfScore_ = clamp(score, 0.0, 100.0);
     }
-
     std::string toCSV() const {
         std::ostringstream oss;
         oss << name_ << "," << difficulty_ << "," << importance_ << "," << perfScore_ << "," << allocatedHours_;
         return oss.str();
     }
-
     static Subject fromCSV(const std::string& line) {
         std::istringstream iss(line);
         std::string tok;
@@ -105,7 +78,6 @@ public:
         s.setAllocatedHours(std::stod(parts[4]));
         return s;
     }
-
     std::string summary() const {
         std::ostringstream oss;
         oss << std::left << std::setw(15) << name_
@@ -116,7 +88,6 @@ public:
         return oss.str();
     }
 };
-
 struct Schedule {
     std::map<std::string, double> alloc;
     Schedule() = default;
@@ -138,12 +109,10 @@ struct Schedule {
         return oss.str();
     }
 };
-
 class StudyPlanner {
 private:
     std::vector<std::shared_ptr<Subject>> subjects_;
     double totalDailyHours_;
-
 public:
     StudyPlanner() : totalDailyHours_(4.0) {}
     void addSubject(const std::string& name, int diff, int imp, double perf = 100.0) {
@@ -247,7 +216,6 @@ public:
         return sch;
     }
 };
-
 void printHeader() { std::cout << "\n=== SMART STUDY PLANNER (AI Scheduling) ===\n"; }
 void printMenu() {
     std::cout << "\nMenu:\n"
